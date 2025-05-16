@@ -3,9 +3,11 @@
 #pragma once
 #include "GameplayTagContainer.h"
 #include "InputAction.h"
-#include "AbilitySystem/Abilities/BAGameplayAbility.h"
+#include "AbilitySystem/Abilities/BAHeroGameplayAbility.h"
 #include "BAStructTypes.generated.h"
 
+class UDataAsset_HeroStartUpData;
+class UBAHeroGameplayAbility;
 class UInputMappingContext;
 class UBAHeroLinkedAnimLayer;
 class UBAGameplayAbility;
@@ -24,7 +26,6 @@ struct FBAInputActionConfig
 	bool IsValid() const { return InputTag.IsValid()&&InputAction; }
 };
 
-
 USTRUCT(BlueprintType)
 struct FBAHeroAbilitySet
 {
@@ -34,9 +35,22 @@ struct FBAHeroAbilitySet
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UBAGameplayAbility> AbilityToGrant;
+	TSubclassOf<UBAHeroGameplayAbility> AbilityToGrant;
 
 	bool IsValid() const { return InputTag.IsValid()&&AbilityToGrant;}
+};
+
+USTRUCT(BlueprintType)
+struct FBAHeroSpecialAbilitySet : public FBAHeroAbilitySet
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UMaterialInstance> SoftAbilityIconMaterial;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Categories="Player.Cooldown"))
+	FGameplayTag AbilityCooldownTag;
+	
 };
 
 USTRUCT(BlueprintType)
@@ -52,4 +66,31 @@ struct FBAHeroWeaponData
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(TitleProperty="InputTag"))
 	TArray<FBAHeroAbilitySet> DefaultWeaponAbilities;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(TitleProperty="InputTag"))
+	TArray<FBAHeroSpecialAbilitySet> SpecialWeaponAbilities;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	FScalableFloat WeaponBaseDamage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UTexture2D> SoftWeaponIconTexture;
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag WeaponTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMesh* WeaponMesh; 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UDataAsset_HeroStartUpData> WeaponAbilityData;
+	
+
 };

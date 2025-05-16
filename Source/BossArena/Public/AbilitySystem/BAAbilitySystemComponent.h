@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "BAAbilitySystemComponent.generated.h"
 
+struct FBAHeroSpecialAbilitySet;
 struct FBAHeroAbilitySet;
 /**
  * 
@@ -20,7 +21,7 @@ public:
 	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
 
 	UFUNCTION(BlueprintCallable, Category = "BossArena|Ability", meta=(ApplyLevel="1"))
-	void GrantHeroWeaponAbilities(const TArray<FBAHeroAbilitySet>& InDefaultWeaponAbilities, int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);
+	void GrantHeroWeaponAbilities(const TArray<FBAHeroAbilitySet>& InDefaultWeaponAbilities, const TArray<FBAHeroSpecialAbilitySet>& InSpecialWeaponAbilities, int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);
 
 	UFUNCTION(BlueprintCallable, Category = "BossArena|Ability")
 	void RemovedGrantedHeroWeaponAbilities(UPARAM(ref) TArray<FGameplayAbilitySpecHandle>& InSpecHandlesToRemove);

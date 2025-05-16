@@ -2,9 +2,9 @@
 
 
 #include "Characters/BABaseCharacter.h"
-
 #include "AbilitySystem/BAAbilitySystemComponent.h"
 #include "AbilitySystem/BAAttributeSet.h"
+#include "MotionWarpingComponent.h"
 
 // Sets default values
 ABABaseCharacter::ABABaseCharacter()
@@ -18,13 +18,24 @@ ABABaseCharacter::ABABaseCharacter()
 	BAAbilitySystemComponent=CreateDefaultSubobject<UBAAbilitySystemComponent>(TEXT("BAAbilitySystemComponent"));
 
 	BAAttributeSet=CreateDefaultSubobject<UBAAttributeSet>(TEXT("BAAttributeSet"));
-	
+
+	MotionWarpingComponent=CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
 }
 
 UAbilitySystemComponent* ABABaseCharacter::GetAbilitySystemComponent() const
 {
 	return GetBAAbilitySystemComponent();
+}
+
+UPawnCombatComponent* ABABaseCharacter::GetPawnCombatComponent() const
+{
+	return nullptr;
+}
+
+UPawnUIComponent* ABABaseCharacter::GetPawnUIComponent() const
+{
+	return nullptr;
 }
 
 void ABABaseCharacter::PossessedBy(AController* NewController)

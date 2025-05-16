@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "BATypes/BAEnumTypes.h"
 #include "BAGameplayAbility.generated.h"
 
 class UPawnCombatComponent;
@@ -33,16 +34,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "BossArenaAbility")
 	EBAAbilityActivationPolicy AbilityActivationPolicy=EBAAbilityActivationPolicy::OnTriggered;
 
-	UFUNCTION(BlueprintCallable, Category = "BossArena|Ability")
+	UFUNCTION(BlueprintPure, Category = "BossArena|Ability")
 	UPawnCombatComponent* GetPawnCombatComponentFromActorInfo() const;
 
 	UFUNCTION(BlueprintPure, Category = "BossArena|Ability")
 	UBAAbilitySystemComponent* GetBAAbilitySystemFromActorInfo() const;
 
-	//FActiveGameplayEffectHandle NativeApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle) const;
+	FActiveGameplayEffectHandle NativeApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle) const;
 
-	/*UFUNCTION(BlueprintPure, Category = "BossArena|Ability")
-	FActiveGameplayEffectHandle BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EBA) const;*/
+	UFUNCTION(BlueprintCallable, Category = "BossArena|Ability",meta=(DisplayName="Apply Gameplay Effect Spec Handle To Target Actor", ExpandEnumAsExecs="OutSuccessType"))
+	FActiveGameplayEffectHandle BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EBASuccessfulType& OutSuccessType);
+
+	UFUNCTION(BlueprintCallable, Category = "BossArena|Ability")
+	void ApplyGameplayEffectSpecHandleToHitResults(const FGameplayEffectSpecHandle& InSpecHandle, const TArray<FHitResult>& InHitResults);
 	
 	
 };

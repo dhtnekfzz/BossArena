@@ -3,11 +3,13 @@
 
 #include "AnimInstances/BABaseAnimInstance.h"
 
+#include "BAFunctionLibrary.h"
+
 bool UBABaseAnimInstance::DoesOwnerHaveTag(FGameplayTag TagToCheck) const
 {
 	if (APawn* OwningPawn=TryGetPawnOwner())
 	{
-		//return UBAFunctionLibrary::
+		return UBAFunctionLibrary::NativeDoesActorHaveTag(OwningPawn, TagToCheck);
 	}
 
 	return true;

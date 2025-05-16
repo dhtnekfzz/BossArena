@@ -5,14 +5,19 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interfaces/PawnCombatInterface.h"
+#include "Interfaces/PawnUIInterface.h"
 #include "BABaseCharacter.generated.h"
 
+class UMotionWarpingComponent;
+class UPawnUIComponent;
+class UPawnCombatComponent;
 class UDataAsset_StartUpDataBase;
 class UBAAttributeSet;
 class UBAAbilitySystemComponent;
 
 UCLASS()
-class BOSSARENA_API ABABaseCharacter : public ACharacter, public IAbilitySystemInterface
+class BOSSARENA_API ABABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface, public IPawnUIInterface
 {
 	GENERATED_BODY()
 
@@ -24,6 +29,14 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	//~ End InAbilitySystemInterface Interface
 
+	//~ Begin IPawnCombatInterface Interface
+	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+	//~ End IPawnCombatInterface Interface
+	
+	//~ Begin IPawnUIInterface Interface
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	//~ End IPawnUIInterface Interface
+	
 protected:
 	//~ Begin APawn Interface
 	virtual void PossessedBy(AController* NewController) override;
@@ -34,6 +47,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	UBAAttributeSet* BAAttributeSet;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
+	UMotionWarpingComponent* MotionWarpingComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="CharacterData")
 	TSoftObjectPtr<UDataAsset_StartUpDataBase> CharacterStartUpData;

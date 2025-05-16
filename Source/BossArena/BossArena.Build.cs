@@ -6,6 +6,7 @@ public class BossArena : ModuleRules
 {
 	public BossArena(ReadOnlyTargetRules Target) : base(Target)
 	{
+		PrivateDependencyModuleNames.AddRange(new string[] { "AnimGraphRuntime", "AnimGraphRuntime"  });
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] 
@@ -18,7 +19,11 @@ public class BossArena : ModuleRules
 			"GameplayTags", 
 			"GameplayAbilities", 
 			"GameplayAbilities",
-			"GameplayTasks",
+			"GameplayTasks", 
+			"AIModule",
+			"MotionWarping",
+			"NavigationSystem",
+			"Niagara"
 		});
 		PublicDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 	}

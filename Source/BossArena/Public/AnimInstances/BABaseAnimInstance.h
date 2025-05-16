@@ -18,4 +18,6 @@ class BOSSARENA_API UBABaseAnimInstance : public UAnimInstance
 protected:
 	UFUNCTION(BlueprintPure, meta=(BlueprintThreadSafe))
 	bool DoesOwnerHaveTag(FGameplayTag TagToCheck) const;
+
+	
 };

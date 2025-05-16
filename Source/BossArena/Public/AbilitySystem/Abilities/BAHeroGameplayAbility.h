@@ -27,6 +27,12 @@ public:
 	UFUNCTION(BlueprintPure, Category="BossArena|Ability")
 	UHeroCombatComponent* GetHeroCombatComponentFromActorInfo();
 
+	UFUNCTION(BlueprintPure, Category="BossArena|Ability")
+	FGameplayEffectSpecHandle MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, float InWeaponBaseDamage, FGameplayTag InCurrentAttackTypeTag, int32 InUsedComboCount);
+
+	UFUNCTION(BlueprintCallable, Category="BossArena|Ability")
+	bool GetAbilityRemainingCooldownByTag(FGameplayTag InCooldownTag, float& TotalCooldownTime, float& RemainingCooldownTime);
+
 private:
 	TWeakObjectPtr<ABAHeroCharacter> CachedHeroCharacter;
 	TWeakObjectPtr<ABAHeroController> CachedHeroController;

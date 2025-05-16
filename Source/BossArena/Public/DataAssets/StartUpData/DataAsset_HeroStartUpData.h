@@ -16,7 +16,7 @@ class BOSSARENA_API UDataAsset_HeroStartUpData : public UDataAsset_StartUpDataBa
 	GENERATED_BODY()
 
 public:
-	virtual void GiveToAbilitySystemComponent(UBAAbilitySystemComponent* InASCToGive, int32 ApplyLeve = 1) override;
+	virtual void GiveToAbilitySystemComponent(UBAAbilitySystemComponent* InASCToGive, int32 ApplyLevel = 1) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData", meta=(TitleProperty="InputTag"))

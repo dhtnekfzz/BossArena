@@ -3,6 +3,7 @@
 
 #include "Characters/BAHeroCharacter.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "BAGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/BAAbilitySystemComponent.h"
@@ -10,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/Combat/HeroCombatComponent.h"
 #include "Components/Input/BAInputComponent.h"
+#include "Components/UI/HeroUIComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -38,7 +40,7 @@ ABAHeroCharacter::ABAHeroCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking=2000.f;
 
 	HeroCombatComponent=CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
-	
+	HeroUIComponent=CreateDefaultSubobject<UHeroUIComponent>(TEXT("HeroUIComponent"));
 	
 }
 
@@ -53,6 +55,21 @@ void ABAHeroCharacter::PossessedBy(AController* NewController)
 			LoadedData->GiveToAbilitySystemComponent(BAAbilitySystemComponent);
 		}
 	}
+}
+
+UPawnCombatComponent* ABAHeroCharacter::GetPawnCombatComponent() const
+{
+	return HeroCombatComponent;
+}
+
+UPawnUIComponent* ABAHeroCharacter::GetPawnUIComponent() const
+{
+	return HeroUIComponent;
+}
+
+UHeroUIComponent* ABAHeroCharacter::GetHeroUIComponent() const
+{
+	return HeroUIComponent;
 }
 
 void ABAHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -71,6 +88,8 @@ void ABAHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	BAInputComponent->BindNativeInputAction(InputConfigDataAsset, BAGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
 	BAInputComponent->BindNativeInputAction(InputConfigDataAsset, BAGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
+
+	BAInputComponent->BindNativeInputAction(InputConfigDataAsset, BAGameplayTags::InputTag_PickUp_Weapon, ETriggerEvent::Started, this, &ThisClass::Input_PickUpWeaponStarted);
 
 	BAInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
 
@@ -109,6 +128,17 @@ void ABAHeroCharacter::Input_Look(const FInputActionValue& InputActionValue)
 	{
 		AddControllerYawInput(LookAxisVector.Y);
 	}
+}
+
+void ABAHeroCharacter::Input_PickUpWeaponStarted(const FInputActionValue& InputActionValue)
+{
+	FGameplayEventData Data;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		BAGameplayTags::Player_Event_PickUp_Weapon,
+		Data
+	);
 }
 
 void ABAHeroCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)

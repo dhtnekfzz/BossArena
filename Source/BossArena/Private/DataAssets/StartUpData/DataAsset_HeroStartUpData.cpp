@@ -2,7 +2,6 @@
 
 
 #include "DataAssets/StartUpData/DataAsset_HeroStartUpData.h"
-
 #include "GameplayAbilitySpec.h"
 #include "AbilitySystem/BAAbilitySystemComponent.h"
 #include "BATypes/BAStructTypes.h"
@@ -23,3 +22,4 @@ void UDataAsset_HeroStartUpData::GiveToAbilitySystemComponent(UBAAbilitySystemCo
 		InASCToGive->GiveAbility(AbilitySpec);
 	}
 }
+

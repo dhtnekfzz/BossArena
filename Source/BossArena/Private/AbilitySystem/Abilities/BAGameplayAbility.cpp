@@ -3,7 +3,10 @@
 
 #include "AbilitySystem/Abilities/BAGameplayAbility.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "BAFunctionLibrary.h"
+#include "BAGameplayTags.h"
 #include "AbilitySystem/BAAbilitySystemComponent.h"
 #include "Components/Combat/PawnCombatComponent.h"
 
@@ -43,4 +46,59 @@ UBAAbilitySystemComponent* UBAGameplayAbility::GetBAAbilitySystemFromActorInfo()
 {
 	return Cast<UBAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
 }
+
+FActiveGameplayEffectHandle UBAGameplayAbility::NativeApplyEffectSpecHandleToTarget(AActor* TargetActor,
+	const FGameplayEffectSpecHandle& InSpecHandle) const
+{
+	UAbilitySystemComponent* TargetASC=UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+
+	check(TargetASC && InSpecHandle.IsValid());
+
+	return GetBAAbilitySystemFromActorInfo()->ApplyGameplayEffectSpecToTarget(
+		*InSpecHandle.Data, TargetASC
+	);
+}
+
+FActiveGameplayEffectHandle UBAGameplayAbility::BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor,
+	const FGameplayEffectSpecHandle& InSpecHandle, EBASuccessfulType& OutSuccessType) 
+{
+	FActiveGameplayEffectHandle ActiveGameplayEffectHandle=NativeApplyEffectSpecHandleToTarget(TargetActor, InSpecHandle);
+
+	OutSuccessType=ActiveGameplayEffectHandle.WasSuccessfullyApplied() ? EBASuccessfulType::Successful : EBASuccessfulType::Failed;
+
+	return ActiveGameplayEffectHandle;
+}
+
+void UBAGameplayAbility::ApplyGameplayEffectSpecHandleToHitResults(const FGameplayEffectSpecHandle& InSpecHandle,
+	const TArray<FHitResult>& InHitResults)
+{
+	if (InHitResults.IsEmpty()) return;
+
+	APawn* OwningPawn=CastChecked<APawn>(GetAvatarActorFromActorInfo());
+
+	for (const FHitResult& Hit : InHitResults)
+	{
+		if (APawn* HitPawn=Cast<APawn>(Hit.GetActor())) 
+		{
+			if (UBAFunctionLibrary::IsTargetPawnHostile(OwningPawn,HitPawn))
+			{
+				FActiveGameplayEffectHandle ActiveGameplayEffectHandle=NativeApplyEffectSpecHandleToTarget(HitPawn, InSpecHandle);
+
+				if (ActiveGameplayEffectHandle.WasSuccessfullyApplied())
+				{
+					FGameplayEventData Data;
+					Data.Instigator = OwningPawn;
+					Data.Target=HitPawn;
+
+					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+						HitPawn,
+						BAGameplayTags::Shared_Event_HitReact,
+						Data
+					);
+				}
+			}
+		}
+	}
+}
+
 

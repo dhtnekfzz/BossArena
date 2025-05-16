@@ -2,7 +2,7 @@
 
 
 #include "AnimInstances/BACharacterAnimInstance.h"
-
+#include "KismetAnimationLibrary.h"
 #include "Characters/BABaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -26,4 +26,6 @@ void UBACharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSecond
 	GroundSpeed=OwningCharacter->GetVelocity().Size2D();
 
 	bHasAcceleration=OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D()>0.f;
+
+	LocomotionDirection=UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(), OwningCharacter->GetActorRotation());
 }

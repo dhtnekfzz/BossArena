@@ -19,7 +19,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="BossArena|Combat")
 	ABAHeroWeapon* GetHeroCurrentEquippedWeapon() const;
 
+	UFUNCTION(BlueprintCallable, Category="BossArena|Combat")
+	float GetHeroCurrentEquippedWeaponDamageAtLevel(float InLevel) const;
 	
-
-
+	virtual void OnHitTargetActor(AActor* HitActor) override;
+	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor) override;
+	
 };
