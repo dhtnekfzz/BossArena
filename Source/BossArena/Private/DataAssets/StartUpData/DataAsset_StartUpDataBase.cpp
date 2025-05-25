@@ -29,7 +29,6 @@ void UDataAsset_StartUpDataBase::GiveToAbilitySystemComponent(UBAAbilitySystemCo
 			);
 		}
 	}
-	
 }
 
 void UDataAsset_StartUpDataBase::GrantAbilities(const TArray<TSubclassOf<UBAGameplayAbility>>& InAbilitiesToGive,

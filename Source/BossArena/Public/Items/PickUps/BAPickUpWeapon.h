@@ -26,11 +26,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "WeaponMesh")
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
 
-
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void OnPickUpCollisionSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	virtual void OnPickUpCollisionSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponData")
 	TObjectPtr<UDataTable> WeaponData;
@@ -40,6 +40,4 @@ protected:
 	
 	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="On Weapon PickUp"))
 	void BP_OnWeaponPickUp();
-
-
 };

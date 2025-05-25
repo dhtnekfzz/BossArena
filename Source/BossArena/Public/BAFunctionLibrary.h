@@ -59,5 +59,4 @@ public:
 	static void CountDown(const UObject* WorldContextObject, float TotalTime, float UpdateInterval, float& OutRemainingTime, EBACountDownActionInput CountDownInput,
 	UPARAM(DisplayName="Output") EBACountDownActionOutput& CountDownOutput, FLatentActionInfo LatentInfo);
 	
-
 }; 
