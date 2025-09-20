@@ -23,7 +23,10 @@ public class BossArena : ModuleRules
 			"AIModule",
 			"MotionWarping",
 			"NavigationSystem",
-			"Niagara"
+			"Niagara",
+			"OnlineSubsystem",
+			"OnlineSubsystemUtils", 
+			"ModelViewViewModel",
 		});
 		PublicDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 	}

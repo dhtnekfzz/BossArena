@@ -10,7 +10,6 @@ class UTextBlock;
 /**
  * 
  */
-
 DECLARE_DELEGATE_OneParam(FOnSelectionChangedDelegate, int)
 
 USTRUCT(BlueprintType)

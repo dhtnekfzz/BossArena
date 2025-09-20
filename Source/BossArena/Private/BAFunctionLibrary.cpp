@@ -25,7 +25,7 @@ void UBAFunctionLibrary::RemoveGameplayTagFromActorIfFound(AActor* InActor, FGam
 
 	if (ASC->HasMatchingGameplayTag(TagToRemove))
 	{
-		ASC->RemoveLooseGameplayTag(TagToRemove);
+		ASC->RemoveLooseGameplayTag (TagToRemove);
 	}
 }
 
@@ -36,6 +36,7 @@ void UBAFunctionLibrary::AddGameplayTagToActorIfNone(AActor* InActor, FGameplayT
 	if (!ASC->HasMatchingGameplayTag(TagToAdd))
 	{
 		ASC->AddLooseGameplayTag(TagToAdd);
+		ASC->AddReplicatedLooseGameplayTag(TagToAdd);
 	}
 }
 

@@ -9,9 +9,7 @@
 class UBASelectionBase;
 class UCheckBox;
 class UComboBoxString;
-/**
- * 
- */
+
 UCLASS()
 class BOSSARENA_API UBASettingsWidgetBase : public UBAWidgetBase
 {

@@ -55,3 +55,8 @@ void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor
 		FGameplayEventData()
 	);
 }
+
+
+
+
+

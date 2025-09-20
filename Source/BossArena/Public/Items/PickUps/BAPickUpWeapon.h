@@ -6,6 +6,7 @@
 #include "Items/PickUps/BAPickUpBase.h"
 #include "BAPickUpWeapon.generated.h"
 
+class UDataTable;
 class UDataAsset_HeroStartUpData;
 class ABAHeroCharacter;
 class UBAAbilitySystemComponent;

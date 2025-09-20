@@ -96,5 +96,10 @@ namespace BAGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Status_HitReact_Left, "Shared.Status.HitReact.Left");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Status_Invincible, "Shared.Status.Invincible");
 
+	/* GameplayCue Tags */
+	UE_DEFINE_GAMEPLAY_TAG(GameplayCue_UI_WaveStart, "GameplayCue.UI.WaveStart")
+	UE_DEFINE_GAMEPLAY_TAG(GameplayCue_UI_WaveComplete, "GameplayCue.UI.WaveComplete")
+	UE_DEFINE_GAMEPLAY_TAG(GameplayCue_UI_AllWavesDone, "GameplayCue.UI.AllWavesDone")
+
 
 }

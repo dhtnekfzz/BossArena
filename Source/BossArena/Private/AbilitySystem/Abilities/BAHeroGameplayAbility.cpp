@@ -12,6 +12,7 @@ ABAHeroCharacter* UBAHeroGameplayAbility::GetHeroCharacterFromActorInfo()
 	if (!CachedHeroCharacter.IsValid())
 	{
 		CachedHeroCharacter=Cast<ABAHeroCharacter>(CurrentActorInfo->AvatarActor);
+		
 	}
 
 	return CachedHeroCharacter.Get();
@@ -21,7 +22,11 @@ ABAHeroController* UBAHeroGameplayAbility::GetHeroControllerFromActorInfo()
 {
 	if (!CachedHeroController.IsValid())
 	{
-		CachedHeroController=Cast<ABAHeroController>(CurrentActorInfo->PlayerController);
+		//CachedHeroController=Cast<ABAHeroController>(CurrentActorInfo->PlayerController);
+		if (ABAHeroCharacter* AvatarCharacter=GetHeroCharacterFromActorInfo())
+		{
+			CachedHeroController=Cast<ABAHeroController>(AvatarCharacter->GetController());
+		}
 	}
 
 	return CachedHeroController.Get();

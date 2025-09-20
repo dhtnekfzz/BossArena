@@ -36,6 +36,12 @@ public:
 	//~ Begin IPawnUIInterface Interface
 	virtual UPawnUIComponent* GetPawnUIComponent() const override;
 	//~ End IPawnUIInterface Interface
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void Multicast_PlayDeathEffects(UObject* NiagaraSystem);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	void BP_PlayDeathEffects(UObject* NiagaraSystem);
 	
 protected:
 	//~ Begin APawn Interface

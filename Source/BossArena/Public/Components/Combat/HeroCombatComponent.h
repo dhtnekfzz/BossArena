@@ -25,4 +25,11 @@ public:
 	virtual void OnHitTargetActor(AActor* HitActor) override;
 	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor) override;
 	
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName = "Update"))
+	void BP_UpdateWeaponVisuals(FGameplayTag InCurrentEquipWeaponTag);
+
+
+protected:
+
+	 
 };

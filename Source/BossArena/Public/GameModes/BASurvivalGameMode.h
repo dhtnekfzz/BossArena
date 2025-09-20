@@ -7,6 +7,7 @@
 #include "BASurvivalGameMode.generated.h"
 
 
+class UMVVM_SurvivalUI;
 class ABAEnemyCharacter;
 
 UENUM(BlueprintType)
@@ -77,7 +78,7 @@ private:
 	void OnEnemyDestroyed(AActor* DestroyedActor);
 
 	UPROPERTY()
-	EBASurvivalGameModeState CurrentSurvivalGameModeState;
+	EBASurvivalGameModeState CurrentSurvivalGameModeState=EBASurvivalGameModeState::AllWavesDone;
 
 	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnSurvialGameModeStateChangedDelegate OnSurvivalGameModeStateChanged;
@@ -118,5 +119,7 @@ private:
 public:
 	UFUNCTION(BlueprintCallable)
 	void RegisterSpawnedEnemies(const TArray<ABAEnemyCharacter*>& InEnemiesToRegister);
+
+
 	
 };

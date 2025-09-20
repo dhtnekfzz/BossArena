@@ -68,7 +68,4 @@ void UHeroGameplayAbility_PickUpWeapon::PickUpWeapon()
 
 	TMap<FGameplayTag, ABAWeaponBase*> CarriedWeaponMap=GetHeroCombatComponentFromActorInfo()->GetCharacterCarriedWeaponMap();
 
-
-	
-	;
 }

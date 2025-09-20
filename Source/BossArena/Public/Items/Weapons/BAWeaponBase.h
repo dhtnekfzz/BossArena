@@ -18,6 +18,8 @@ class BOSSARENA_API ABAWeaponBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABAWeaponBase();
+	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	FOnTargetInteractedDelegate OnWeaponHitTarget;
 	FOnTargetInteractedDelegate OnWeaponPulledFromTarget;

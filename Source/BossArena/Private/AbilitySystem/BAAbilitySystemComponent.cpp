@@ -36,6 +36,8 @@ void UBAAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FBAHeroAbi
 {
 	if (InDefaultWeaponAbilities.IsEmpty()) return;
 
+	if (!GetOwner()->HasAuthority()) return;
+
 	for (const FBAHeroAbilitySet& AbilitySet : InDefaultWeaponAbilities)
 	{
 		if (AbilitySet.IsValid())
@@ -69,6 +71,7 @@ void UBAAbilitySystemComponent::RemovedGrantedHeroWeaponAbilities(
 	TArray<FGameplayAbilitySpecHandle>& InSpecHandlesToRemove)
 {
 	if (InSpecHandlesToRemove.IsEmpty()) return;
+	if (!GetOwner()->HasAuthority()) return;
 
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InSpecHandlesToRemove)
 	{

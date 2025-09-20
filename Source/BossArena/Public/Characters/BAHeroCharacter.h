@@ -25,6 +25,8 @@ class BOSSARENA_API ABAHeroCharacter : public ABABaseCharacter
 
 public:
 	ABAHeroCharacter();
+	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	//~Begin APawn Interface
@@ -73,10 +75,17 @@ private:
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, meta=(AllowPrivateAccess="true"))
+	FVector LastMovementInput;
+	
 #pragma endregion
 
 public:
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void Multicast_LinkAnimLayers(TSubclassOf<UAnimInstance> NewLayer);
+
 	
 };
 

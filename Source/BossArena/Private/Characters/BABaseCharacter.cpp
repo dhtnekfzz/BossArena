@@ -13,14 +13,18 @@ ABABaseCharacter::ABABaseCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
+	bReplicates=true;
+
 	GetMesh()->bReceivesDecals=false;
 
 	BAAbilitySystemComponent=CreateDefaultSubobject<UBAAbilitySystemComponent>(TEXT("BAAbilitySystemComponent"));
+	BAAbilitySystemComponent->SetIsReplicated(true);
+	BAAbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
 	BAAttributeSet=CreateDefaultSubobject<UBAAttributeSet>(TEXT("BAAttributeSet"));
 
 	MotionWarpingComponent=CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
-
+	
 }
 
 UAbilitySystemComponent* ABABaseCharacter::GetAbilitySystemComponent() const
@@ -36,6 +40,11 @@ UPawnCombatComponent* ABABaseCharacter::GetPawnCombatComponent() const
 UPawnUIComponent* ABABaseCharacter::GetPawnUIComponent() const
 {
 	return nullptr;
+}
+
+void ABABaseCharacter::Multicast_PlayDeathEffects_Implementation(UObject* NiagaraSystem)
+{
+	BP_PlayDeathEffects(NiagaraSystem);
 }
 
 void ABABaseCharacter::PossessedBy(AController* NewController)

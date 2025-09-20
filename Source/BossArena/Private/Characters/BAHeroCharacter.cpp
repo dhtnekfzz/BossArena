@@ -14,10 +14,13 @@
 #include "Components/UI/HeroUIComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
 
 ABAHeroCharacter::ABAHeroCharacter()
 {
+	bReplicates=true;
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
 	bUseControllerRotationPitch = false;
@@ -29,30 +32,42 @@ ABAHeroCharacter::ABAHeroCharacter()
 	SpringArm->TargetArmLength=200.f;
 	SpringArm->SocketOffset=FVector(0.f, 55.f, 65.f);
 	SpringArm->bUsePawnControlRotation=true;
+	SpringArm->SetVisibility(false);
 
 	Camera=CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation=false;
+	Camera->SetVisibility(false);
 
 	GetCharacterMovement()->bOrientRotationToMovement=true;
 	GetCharacterMovement()->RotationRate=FRotator(0.0f,500.f,0.f);
 	GetCharacterMovement()->MaxWalkSpeed=400.f;
 	GetCharacterMovement()->BrakingDecelerationWalking=2000.f;
+	GetCharacterMovement()->SetIsReplicated(true);
 
 	HeroCombatComponent=CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
 	HeroUIComponent=CreateDefaultSubobject<UHeroUIComponent>(TEXT("HeroUIComponent"));
 	
 }
 
+void ABAHeroCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME_CONDITION_NOTIFY(ABAHeroCharacter, LastMovementInput, COND_None, REPNOTIFY_Always);
+}
+
 void ABAHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (!CharacterStartUpData.IsNull())
+	if (HasAuthority())
 	{
-		if (UDataAsset_StartUpDataBase* LoadedData=CharacterStartUpData.LoadSynchronous())
+		if (!CharacterStartUpData.IsNull())
 		{
-			LoadedData->GiveToAbilitySystemComponent(BAAbilitySystemComponent);
+			if (UDataAsset_StartUpDataBase* LoadedData=CharacterStartUpData.LoadSynchronous())
+			{
+				LoadedData->GiveToAbilitySystemComponent(BAAbilitySystemComponent);
+			}
 		}
 	}
 }
@@ -106,12 +121,14 @@ void ABAHeroCharacter::Input_Move(const FInputActionValue& InputActionValue)
 	{
 		const FVector ForwardDirection=MovementRotation.RotateVector(FVector::ForwardVector);
 		AddMovementInput(ForwardDirection, MovementVector.Y);
+		LastMovementInput=ForwardDirection*MovementVector.Y;
 	}
 
 	if (MovementVector.X !=0.f)
 	{
 		const FVector RightDirection=MovementRotation.RotateVector(FVector::RightVector);
 		AddMovementInput(RightDirection, MovementVector.X);
+		LastMovementInput=RightDirection*MovementVector.X;
 	}
 }
 
@@ -149,4 +166,18 @@ void ABAHeroCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
 void ABAHeroCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 {
 	BAAbilitySystemComponent->OnAbilityInputReleased(InInputTag);	
+}
+
+void ABAHeroCharacter::Multicast_LinkAnimLayers_Implementation(TSubclassOf<UAnimInstance> NewLayer)
+{
+	USkeletalMeshComponent* CharacterMesh = GetMesh();
+	if (GetMesh())
+	{
+		GetMesh()->LinkAnimClassLayers(NewLayer);
+	}
+
+	
+	UE_LOG(LogTemp, Warning, TEXT("Character: %s, Linking anim layers on Mesh: %s, Anim: %s"), *GetName(), *CharacterMesh->GetName(),*NewLayer->GetName());
+	 
+
 }

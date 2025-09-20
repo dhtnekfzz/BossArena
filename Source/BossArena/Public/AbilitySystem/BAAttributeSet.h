@@ -25,21 +25,23 @@ class BOSSARENA_API UBAAttributeSet : public UAttributeSet
 public:
 	UBAAttributeSet();
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
-	UPROPERTY(BlueprintReadOnly, Category="Health")
+	UPROPERTY(BlueprintReadOnly, Category="Health",ReplicatedUsing = OnRep_HealthChanged)
 	FGameplayAttributeData CurrentHealth;
 	ATTRIBUTE_ACCESSORS(UBAAttributeSet, CurrentHealth);
 
-	UPROPERTY(BlueprintReadOnly, Category="Health")
+	UPROPERTY(BlueprintReadOnly, Category="Health", ReplicatedUsing=OnRep_HealthChanged)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UBAAttributeSet, MaxHealth);
 
-	UPROPERTY(BlueprintReadOnly, Category="Rage")
+	UPROPERTY(BlueprintReadOnly, Category="Rage", ReplicatedUsing=OnRep_RageChanged)
 	FGameplayAttributeData CurrentRage;
 	ATTRIBUTE_ACCESSORS(UBAAttributeSet, CurrentRage);
 
-	UPROPERTY(BlueprintReadOnly, Category="Rage")
+	UPROPERTY(BlueprintReadOnly, Category="Rage",ReplicatedUsing=OnRep_RageChanged)
 	FGameplayAttributeData MaxRage;
 	ATTRIBUTE_ACCESSORS(UBAAttributeSet, MaxRage);
 
@@ -54,6 +56,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Damage")
 	FGameplayAttributeData DamageTaken;
 	ATTRIBUTE_ACCESSORS(UBAAttributeSet, DamageTaken);
+
+protected:
+	UFUNCTION()
+	virtual void OnRep_HealthChanged(const FGameplayAttributeData& OldHealth);
+
+	UFUNCTION()
+	virtual void OnRep_RageChanged(const FGameplayAttributeData& OldRage);
 
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;

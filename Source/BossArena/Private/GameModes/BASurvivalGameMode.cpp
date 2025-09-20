@@ -1,13 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GameModes/BASurvivalGameMode.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
+#include "BAGameplayTags.h"
 #include "Characters/BAEnemyCharacter.h"
 #include "Engine/AssetManager.h"
-#include "BAFunctionLibrary.h"
 #include "NavigationSystem.h"
 #include "Engine/StreamableManager.h"
 #include "Engine/TargetPoint.h"
+#include "Game/BAGameStateBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilitySystem/BAAbilitySystemComponent.h"
+#include "UI/ViewModel/MVVM_SurvivalUI.h"
 
 ABASurvivalGameMode::ABASurvivalGameMode()
 {
@@ -27,12 +32,18 @@ void ABASurvivalGameMode::BeginPlay()
 
 	checkf(EnemyWaveSpawnerDataTable,TEXT("Forgot to assign a valid data table in survival game mode blueprint"));
 	
-	SetCurrentSurvivalGameModeState(EBASurvivalGameModeState::WaitSpawnNewWave);
-	
 	TotalWavesToSpawn = EnemyWaveSpawnerDataTable->GetRowNames().Num();
 
 	PreLoadNextWaveEnemies();
+
+	FTimerHandle Timer;
+
+	GetWorldTimerManager().SetTimer(Timer, [this](){SetCurrentSurvivalGameModeState(EBASurvivalGameModeState::WaitSpawnNewWave);},2.f, false);
+	
+	//SetCurrentSurvivalGameModeState(EBASurvivalGameModeState::WaitSpawnNewWave);
+
 }
+
 
 void ABASurvivalGameMode::Tick(float DeltaTime)
 {
@@ -66,6 +77,7 @@ void ABASurvivalGameMode::Tick(float DeltaTime)
 
 	if (CurrentSurvivalGameModeState == EBASurvivalGameModeState::WaveCompleted)
 	{
+		
 		TimePassedSinceStart += DeltaTime;
 
 		if (TimePassedSinceStart >= WaveCompletedWaitTime)
@@ -77,11 +89,13 @@ void ABASurvivalGameMode::Tick(float DeltaTime)
 			if (HasFinishedAllWaves())
 			{
 				SetCurrentSurvivalGameModeState(EBASurvivalGameModeState::AllWavesDone);
+
 			}
 			else
 			{
 				SetCurrentSurvivalGameModeState(EBASurvivalGameModeState::WaitSpawnNewWave);
 				PreLoadNextWaveEnemies();
+
 			}
 		}
 	}
@@ -89,9 +103,49 @@ void ABASurvivalGameMode::Tick(float DeltaTime)
 
 void ABASurvivalGameMode::SetCurrentSurvivalGameModeState(EBASurvivalGameModeState InState)
 {
+	if (CurrentSurvivalGameModeState == InState)
+	{
+		return;
+	}
+
+	auto GS=GetGameState<ABAGameStateBase>();
+	GS->SetCurrentState(InState, CurrentWaveCount);
+	
 	CurrentSurvivalGameModeState = InState;
 
-	OnSurvivalGameModeStateChanged.Broadcast(CurrentSurvivalGameModeState);
+
+	FGameplayTag CueTagToSend;
+	switch (CurrentSurvivalGameModeState)
+	{
+	case EBASurvivalGameModeState::WaitSpawnNewWave:
+		CueTagToSend = BAGameplayTags::GameplayCue_UI_WaveStart;
+		break;
+	case EBASurvivalGameModeState::WaveCompleted:
+		CueTagToSend = BAGameplayTags::GameplayCue_UI_WaveComplete;
+		break;
+	case EBASurvivalGameModeState::AllWavesDone:
+		CueTagToSend = BAGameplayTags::GameplayCue_UI_AllWavesDone;
+		break;
+	default:
+			break;
+	}
+
+	if (CueTagToSend.IsValid())
+	{
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			APlayerController* PC = It->Get();
+			if (PC && PC->GetPawn())
+			{
+				UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PC->GetPawn());
+				if (ASC)
+				{
+					ASC->ExecuteGameplayCue(CueTagToSend);
+				}
+			}
+		}
+	}
+	
 }
 
 bool ABASurvivalGameMode::HasFinishedAllWaves() const

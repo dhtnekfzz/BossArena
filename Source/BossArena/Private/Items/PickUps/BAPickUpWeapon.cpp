@@ -18,6 +18,8 @@ ABAPickUpWeapon::ABAPickUpWeapon()
 
 void ABAPickUpWeapon::PickUp(UBAAbilitySystemComponent* AbilitySystemComponent)
 {
+	if (GetLocalRole() != ROLE_Authority) return;
+	
 	if (!WeaponData) return;
 	
 	ABAHeroCharacter* HeroCharacter=Cast<ABAHeroCharacter>(AbilitySystemComponent->GetAvatarActor());
