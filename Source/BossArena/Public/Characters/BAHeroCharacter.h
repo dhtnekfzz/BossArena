@@ -83,6 +83,18 @@ private:
 public:
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
 
+	UPROPERTY(ReplicatedUsing=OnRep_EquippedAnimLayer)
+	TSubclassOf<UAnimInstance> EquippedAnimLayerClass;
+
+	UFUNCTION()
+	void OnRep_EquippedAnimLayer();
+
+	UFUNCTION(BlueprintCallable)
+	void Server_SetEquippedAnimLayer(TSubclassOf<UAnimInstance> InLayerClass);
+	
+	UFUNCTION(BlueprintCallable)
+	void LinkAnimLayers(TSubclassOf<UAnimInstance> NewLayer);
+
 	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
 	void Multicast_LinkAnimLayers(TSubclassOf<UAnimInstance> NewLayer);
 

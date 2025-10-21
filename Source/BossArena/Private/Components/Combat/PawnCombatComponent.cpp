@@ -2,7 +2,6 @@
 
 
 #include "Components/Combat/PawnCombatComponent.h"
-
 #include "AnimInstances/BAHeroLinkedAnimLayer.h"
 #include "Characters/BAHeroCharacter.h"
 #include "Components/BoxComponent.h"
@@ -21,7 +20,8 @@ void UPawnCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProp
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UPawnCombatComponent, CharacterCarriedWeapons);
-	
+	DOREPLIFETIME(UPawnCombatComponent, CurrentEquippedWeaponTag);
+
 }
 
 void UPawnCombatComponent::RegisterSpawnedWeapon(FGameplayTag InWeaponTagToRegister, ABAWeaponBase* InWeaponToRegister,bool bMainWeapon, bool bRegisterAsEquippedWeapon)
@@ -115,7 +115,8 @@ void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor
 void UPawnCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnable)
 {
 	ABAWeaponBase* WeaponToToggle=GetCharacterCurrentEquippedWeapon();
-	check(WeaponToToggle)
+	check(WeaponToToggle);
+	
 	if (bShouldEnable)
 	{
 		WeaponToToggle->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -127,8 +128,7 @@ void UPawnCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 	}
 }
 
-void UPawnCombatComponent::ToggleBodyCollisionBoxCollision(bool bShouldEnable,
-	EToggleDamageType ToggleDamageType)
+void UPawnCombatComponent::ToggleBodyCollisionBoxCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
 {
 }
 

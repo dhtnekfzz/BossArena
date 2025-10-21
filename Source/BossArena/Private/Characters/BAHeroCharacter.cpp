@@ -54,6 +54,7 @@ void ABAHeroCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME_CONDITION_NOTIFY(ABAHeroCharacter, LastMovementInput, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ABAHeroCharacter, EquippedAnimLayerClass, COND_None, REPNOTIFY_Always);
 }
 
 void ABAHeroCharacter::PossessedBy(AController* NewController)
@@ -168,16 +169,38 @@ void ABAHeroCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 	BAAbilitySystemComponent->OnAbilityInputReleased(InInputTag);	
 }
 
-void ABAHeroCharacter::Multicast_LinkAnimLayers_Implementation(TSubclassOf<UAnimInstance> NewLayer)
+void ABAHeroCharacter::OnRep_EquippedAnimLayer()
+{
+	LinkAnimLayers(EquippedAnimLayerClass);
+}
+
+void ABAHeroCharacter::Server_SetEquippedAnimLayer(TSubclassOf<UAnimInstance> InLayerClass)
+{
+	EquippedAnimLayerClass=InLayerClass;
+
+	LinkAnimLayers(EquippedAnimLayerClass);
+}
+
+void ABAHeroCharacter::LinkAnimLayers(TSubclassOf<UAnimInstance> NewLayer)
 {
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
+
+	EquippedAnimLayerClass=NewLayer;
+	
 	if (GetMesh())
 	{
 		GetMesh()->LinkAnimClassLayers(NewLayer);
 	}
-
 	
-	UE_LOG(LogTemp, Warning, TEXT("Character: %s, Linking anim layers on Mesh: %s, Anim: %s"), *GetName(), *CharacterMesh->GetName(),*NewLayer->GetName());
-	 
+}
+
+void ABAHeroCharacter::Multicast_LinkAnimLayers_Implementation(TSubclassOf<UAnimInstance> NewLayer)
+{
+	USkeletalMeshComponent* CharacterMesh = GetMesh();
+	
+	if (GetMesh())
+	{
+		GetMesh()->LinkAnimClassLayers(NewLayer);
+	}
 
 }

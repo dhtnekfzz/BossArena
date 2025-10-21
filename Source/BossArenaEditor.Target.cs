@@ -9,7 +9,8 @@ public class BossArenaEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+		//bUseUnityBuild = false;
 		ExtraModuleNames.Add("BossArena");
 	}
 }
